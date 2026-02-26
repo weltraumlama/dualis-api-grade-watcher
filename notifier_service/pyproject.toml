@@ -1,0 +1,12 @@
+[project]
+name = "notifier-service"
+version = "0.1.0"
+description = "Receives grade webhooks and sends Telegram notifications."
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.115",
+    "uvicorn[standard]>=0.34",
+    "httpx>=0.28",
+    "pydantic-settings>=2.7",
+    "python-dotenv>=1.0",
+]

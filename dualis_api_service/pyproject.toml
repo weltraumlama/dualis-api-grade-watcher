@@ -1,0 +1,16 @@
+[project]
+name = "dualis"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "fastapi>=0.110.0",
+    "uvicorn>=0.29.0",
+    "requests>=2.31.0",
+    "beautifulsoup4>=4.12.3",
+    "pydantic[email]>=2.6.4",
+    "python-dotenv>=1.0.1",
+    "httpx>=0.28.1",
+]
+

@@ -1,0 +1,86 @@
+# fill in environment values (either .env or in docker-compose)
+# docker compose pull
+# docker compose up
+
+services:
+
+  dualis-api-service:
+    image: ghcr.io/weltraumlama/dualis-api-service:latest
+    build:
+      context: ./dualis_api_service
+      dockerfile: Dockerfile
+    container_name: dualis-api-service
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    networks:
+      - dualis-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  notifier-service:
+    image: ghcr.io/weltraumlama/dualis-notifier-service:latest
+    build:
+      context: ./notifier_service
+      dockerfile: Dockerfile
+    container_name: notifier-service
+    restart: unless-stopped
+    ports:
+      - "8002:8002"
+    env_file:
+      - ./notifier_service/.env
+    environment:
+      - TELEGRAM_BOT_TOKEN=
+      - TELEGRAM_CHAT_ID=
+      - PORT=8002
+    networks:
+      - dualis-net
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  refresh-service:
+    image: ghcr.io/weltraumlama/dualis-refresh-service:latest
+    build:
+      context: ./refresh_service
+      dockerfile: Dockerfile
+    container_name: refresh-service
+    restart: unless-stopped
+    ports:
+      - "8001:8001"
+    env_file:
+      - ./refresh_service/.env
+    environment:
+      - DUALIS_USER=
+      - DUALIS_PASSWORD=
+      - REFRESH_INTERVAL_SECONDS=300
+      - PORT=8001
+      - SEMESTER_ID=
+      - STATE_FILE=grades_state.json
+      # Override URLs to use Docker-internal hostnames
+      - DUALIS_API_URL=http://dualis-api-service:8000
+      - WEBHOOK_URL=http://notifier-service:8002/new-grade
+    volumes:
+      - refresh-state:/app/state
+    depends_on:
+      dualis-api-service:
+        condition: service_healthy
+      notifier-service:
+        condition: service_healthy
+    networks:
+      - dualis-net
+
+volumes:
+  refresh-state:
+    driver: local
+
+networks:
+  dualis-net:
+    driver: bridge
