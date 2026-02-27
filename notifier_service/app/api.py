@@ -10,10 +10,10 @@ logging.basicConfig(
     level=logging.INFO,
     format="%(asctime)s %(levelname)s %(name)s: %(message)s",
 )
-logger = logging.getLogger("notifier-service")
+logger = logging.getLogger("notification-service")
 
 app = FastAPI(
-    title="Dualis Grade Notifier Service",
+    title="Dualis Grade notification Service",
     version="0.1.0",
 )
 

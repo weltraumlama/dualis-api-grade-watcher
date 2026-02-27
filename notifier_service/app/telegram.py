@@ -4,7 +4,7 @@ import httpx
 
 from app.config import settings
 
-logger = logging.getLogger("notifier-service")
+logger = logging.getLogger("notification-service")
 
 TELEGRAM_API = f"https://api.telegram.org/bot{settings.telegram_bot_token}"
 

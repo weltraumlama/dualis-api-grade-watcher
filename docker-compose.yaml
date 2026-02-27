@@ -22,17 +22,17 @@ services:
       retries: 3
       start_period: 10s
 
-  notifier-service:
-    image: ghcr.io/weltraumlama/dualis-notifier-service:latest
+  notification-service:
+    image: ghcr.io/weltraumlama/dualis-notification-service:latest
     build:
-      context: ./notifier_service
+      context: ./notification_service
       dockerfile: Dockerfile
-    container_name: notifier-service
+    container_name: notification-service
     restart: unless-stopped
     ports:
       - "8002:8002"
     env_file:
-      - ./notifier_service/.env
+      - ./notification_service/.env
     environment:
       - TELEGRAM_BOT_TOKEN=
       - TELEGRAM_CHAT_ID=
@@ -66,13 +66,13 @@ services:
       - STATE_FILE=grades_state.json
       # Override URLs to use Docker-internal hostnames
       - DUALIS_API_URL=http://dualis-api-service:8000
-      - WEBHOOK_URL=http://notifier-service:8002/new-grade
+      - WEBHOOK_URL=http://notification-service:8002/new-grade
     volumes:
       - refresh-state:/app/state
     depends_on:
       dualis-api-service:
         condition: service_healthy
-      notifier-service:
+      notification-service:
         condition: service_healthy
     networks:
       - dualis-net
