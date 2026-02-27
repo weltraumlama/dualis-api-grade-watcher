@@ -5,7 +5,7 @@
 services:
 
   dualis-api-service:
-    image: ghcr.io/weltraumlama/dualis-api-service:latest
+    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-api-service:latest
     build:
       context: ./dualis_api_service
       dockerfile: Dockerfile
@@ -23,7 +23,7 @@ services:
       start_period: 10s
 
   notification-service:
-    image: ghcr.io/weltraumlama/dualis-notification-service:latest
+    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-notification-service:latest
     build:
       context: ./notification_service
       dockerfile: Dockerfile
@@ -47,7 +47,7 @@ services:
       start_period: 10s
 
   refresh-service:
-    image: ghcr.io/weltraumlama/dualis-refresh-service:latest
+    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-refresh-service:latest
     build:
       context: ./refresh_service
       dockerfile: Dockerfile
