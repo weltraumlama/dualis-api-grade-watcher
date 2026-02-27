@@ -6,67 +6,55 @@ services:
 
   dualis-api-service:
     image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-api-service:latest
-    build:
-      context: ./dualis_api_service
-      dockerfile: Dockerfile
     container_name: dualis-api-service
     restart: unless-stopped
     ports:
-      - "8000:8000"
+      - "8330:8330"
     networks:
       - dualis-net
     healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8000/docs')"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8330/docs')"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
 
   notification-service:
-    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-notification-service:latest
-    build:
-      context: ./notification_service
-      dockerfile: Dockerfile
+    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/notification-service:latest
     container_name: notification-service
     restart: unless-stopped
     ports:
-      - "8002:8002"
-    env_file:
-      - ./notification_service/.env
+      - "8332:8332"
     environment:
       - TELEGRAM_BOT_TOKEN=
       - TELEGRAM_CHAT_ID=
-      - PORT=8002
+      - PORT=8332
     networks:
       - dualis-net
     healthcheck:
-      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8002/health')"]
+      test: ["CMD", "python3", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8332/health')"]
       interval: 10s
       timeout: 5s
       retries: 3
       start_period: 10s
 
   refresh-service:
-    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-refresh-service:latest
-    build:
-      context: ./refresh_service
-      dockerfile: Dockerfile
+    image: ghcr.io/weltraumlama/dualis-api-grade-watcher/refresh-service:latest
     container_name: refresh-service
     restart: unless-stopped
     ports:
-      - "8001:8001"
-    env_file:
-      - ./refresh_service/.env
+      - "8331:8331"
     environment:
       - DUALIS_USER=
       - DUALIS_PASSWORD=
       - REFRESH_INTERVAL_SECONDS=300
-      - PORT=8001
+      - PORT=8331
+      # specify SEMESTER_ID or leave it empty for latest
       - SEMESTER_ID=
       - STATE_FILE=grades_state.json
       # Override URLs to use Docker-internal hostnames
-      - DUALIS_API_URL=http://dualis-api-service:8000
-      - WEBHOOK_URL=http://notification-service:8002/new-grade
+      - DUALIS_API_URL=http://dualis-api-service:8330
+      - WEBHOOK_URL=http://notification-service:8332/new-grade
     volumes:
       - refresh-state:/app/state
     depends_on:

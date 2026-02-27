@@ -8,12 +8,12 @@ Three microservices work together:
 ```
                      poll grades
   refresh-service  ------------->  dualis-api-service
-    (port 8001)                       (port 8000)
+    (port 8331)                       (port 8330)
         |
         | webhook on new grade
         v
   notification-service  ------->  Telegram
-     (port 8002)
+     (port 8332)
 ```
 
 ---
@@ -22,9 +22,9 @@ Three microservices work together:
 
 | Service | Image | Port | Description |
 |---|---|---|---|
-| `dualis-api-service` | `ghcr.io/weltraumlama/dualis-api-service:latest` | 8000 | Scrapes Dualis and exposes a REST API for grades |
-| `refresh-service` | `ghcr.io/weltraumlama/dualis-refresh-service:latest` | 8001 | Polls the API on an interval, fires a webhook on new grades |
-| `notification-service` | `ghcr.io/weltraumlama/dualis-notification-service:latest` | 8002 | Receives the webhook and sends a Telegram message |
+| `dualis-api-service` | `ghcr.io/weltraumlama/dualis-api-service:latest` | 8330 | Scrapes Dualis and exposes a REST API for grades |
+| `refresh-service` | `ghcr.io/weltraumlama/dualis-refresh-service:latest` | 8331 | Polls the API on an interval, fires a webhook on new grades |
+| `notification-service` | `ghcr.io/weltraumlama/dualis-notification-service:latest` | 8332 | Receives the webhook and sends a Telegram message |
 
 ---
 
@@ -67,10 +67,10 @@ docker compose ps
 | `DUALIS_PASSWORD` | yes | — | Dualis password (min 8 chars) |
 | `SEMESTER_ID` | no | *(auto-detect latest)* | Semester ID to watch. Leave empty to use the most recent semester automatically. Retrieve valid IDs via `POST /semesters`. |
 | `REFRESH_INTERVAL_SECONDS` | no | `300` | Polling interval in seconds |
-| `DUALIS_API_URL` | no | `http://dualis-api-service:8000` | Internal URL of the dualis-api-service |
-| `WEBHOOK_URL` | no | `http://notification-service:8002/new-grade` | Internal URL of the notification webhook |
+| `DUALIS_API_URL` | no | `http://dualis-api-service:8330` | Internal URL of the dualis-api-service |
+| `WEBHOOK_URL` | no | `http://notification-service:8332/new-grade` | Internal URL of the notification webhook |
 | `STATE_FILE` | no | `grades_state.json` | Path to the grade state file (persisted via Docker volume) |
-| `PORT` | no | `8001` | Listening port |
+| `PORT` | no | `8331` | Listening port |
 
 ### `notification-service`
 
@@ -78,7 +78,7 @@ docker compose ps
 |---|---|---|---|
 | `TELEGRAM_BOT_TOKEN` | yes | — | Bot token from [@BotFather](https://t.me/BotFather) |
 | `TELEGRAM_CHAT_ID` | yes | — | Target chat/user ID for grade notifications |
-| `PORT` | no | `8002` | Listening port |
+| `PORT` | no | `8332` | Listening port |
 
 ### `dualis-api-service`
 
@@ -88,7 +88,7 @@ No environment variables needed. The service is stateless — credentials are pa
 
 ## API Reference
 
-### dualis-api-service — `http://localhost:8000`
+### dualis-api-service — `http://localhost:8330`
 
 > Interactive Swagger UI available at `/docs`.
 
@@ -112,7 +112,7 @@ Use this to look up a valid `semester_id`.
 **Response `200`**
 ```json
 [
-  { "id": "000000015178000", "name": "Wintersemester 2024/2025" },
+  { "id": "000000015178330", "name": "Wintersemester 2024/2025" },
   { "id": "000000014901000", "name": "Sommersemester 2024" }
 ]
 ```
@@ -133,7 +133,7 @@ Returns grades for a **specific** semester.
 
 | Path param | Description |
 |---|---|
-| `semester_id` | Numeric ID from `POST /semesters` (e.g. `000000015178000`) |
+| `semester_id` | Numeric ID from `POST /semesters` (e.g. `000000015178330`) |
 
 **Request body** — same as `/semesters`
 
@@ -165,7 +165,7 @@ Returns grades for a **specific** semester.
 
 ---
 
-### refresh-service — `http://localhost:8001`
+### refresh-service — `http://localhost:8331`
 
 #### `GET /health`
 Liveness check. Returns `{"status": "ok"}`.
@@ -174,7 +174,7 @@ The grade polling loop starts automatically on startup. There are no other endpo
 
 ---
 
-### notification-service — `http://localhost:8002`
+### notification-service — `http://localhost:8332`
 
 #### `GET /health`
 Liveness check. Returns `{"status": "ok"}`.

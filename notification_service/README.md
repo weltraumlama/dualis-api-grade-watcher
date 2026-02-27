@@ -3,8 +3,8 @@
 FastAPI service that receives a grade webhook and forwards it as a
 Telegram message.
 
-**Port:** `8002`
-**Image:** `ghcr.io/weltraumlama/dualis-notification-service:latest`
+**Port:** `8332`
+**Image:** `ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-notification-service:latest`
 
 ## Endpoints
 

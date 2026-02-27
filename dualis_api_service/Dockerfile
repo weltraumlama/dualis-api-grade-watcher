@@ -15,6 +15,6 @@ RUN uv sync --no-dev
 COPY main.py .
 COPY app/ app/
 
-EXPOSE 8000
+EXPOSE 8330
 
 CMD ["uv", "run", "main.py"]

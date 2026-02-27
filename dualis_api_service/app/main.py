@@ -329,7 +329,7 @@ def get_grades_by_semester(semester_id: str, credentials: Credentials):
     Query grades for a specific semester.
 
     Use GET /semesters first to retrieve available semester IDs.
-    Example: POST /grades/000000015178000
+    Example: POST /grades/000000015178330
     """
     try:
         s, url_content, soup = _login(credentials)

@@ -3,8 +3,8 @@
 FastAPI service that authenticates against the DHBW Dualis portal and scrapes
 grade data.
 
-**Port:** `8000`
-**Image:** `ghcr.io/weltraumlama/dualis-api-service:latest`
+**Port:** `8330`
+**Image:** `ghcr.io/weltraumlama/dualis-api-grade-watcher/dualis-api-service:latest`
 
 ## Endpoints
 
